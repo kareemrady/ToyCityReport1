@@ -50,9 +50,11 @@ puts "|_|                                       "
 		num_of_purchases = item["purchases"].count
 		total_expected_sales = (num_of_purchases * retail_price)
 		puts "Total Number of Purchases : #{num_of_purchases}"
-		item["purchases"].each do |purchase|
-			total_actual_sales += purchase["price"]
-		end
+		# item["purchases"].each do |purchase|
+		# 	total_actual_sales += purchase["price"]
+		# end
+		# Used Inject as per the reviewer's suggestion - Thanks
+		total_actual_sales = item["purchases"].inject(0) {|sum, value| sum + value["price"]}
 		puts "Total Amount of Sales = #{total_actual_sales}$"
 		average_price_toy = total_actual_sales /num_of_purchases
 		puts "Average Price of Toy : #{average_price_toy}$"
@@ -105,16 +107,18 @@ uniq_brands.each do |brand|
 	#initialize variables to be used to keep track of purchases and in stock numbers
   in_stock = 0
 	purchases_arr = []
-
+	full_price_per_brand = 0
 	#loop through the values array of the hash
+	num_products_per_brand = 0
 	key_brand.values.each do |v|
+		num_products_per_brand = v.count
 		#foreach hash in the array
 		v.each do |a|
 			in_stock += a["stock"]
 			purchases_arr.push(a["purchases"])
+			full_price_per_brand += a["full-price"].to_f
 		end
 	end
-
 	total_sales = 0
 	total_number_toys_sold = 0
 	purchases_arr.each do |a|
@@ -126,7 +130,7 @@ uniq_brands.each do |brand|
 	puts ""
 	puts "Brand Name: #{brand}"
 	puts "#{brand}'s Toys In Stock : #{in_stock} "
-	puts "#{brand}'s Average Toy Price : #{(total_sales / total_number_toys_sold).round(2)}$ "
+	puts "#{brand}'s Average Toy Price : #{(full_price_per_brand / num_products_per_brand).round(2)}$ "
 	puts "#{brand}'s Total Sales : #{total_sales.round(2)}$ "
 	puts "------------------------------------------------------------------------------------"
 	puts ""
